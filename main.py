@@ -2,6 +2,9 @@
 """
 Safe Link Distribution Bot
 
+التشغيل يحتاج فقط BOT_TOKEN و OWNER_ID.
+API_ID و API_HASH ثوابت داخل الكود مثل النظام السابق.
+
 الوظائف:
 - إضافة حسابات فحص scanner وحسابات توزيع distribution منفصلة.
 - استيراد روابط Telegram من قناة/مجموعة تجميع.
@@ -51,10 +54,17 @@ def required_env(name: str) -> str:
     return value
 
 
+# المطلوب عند التشغيل فقط:
+# export BOT_TOKEN="توكن البوت"
+# export OWNER_ID="آيدي حسابك الرقمي"
 BOT_TOKEN = required_env("BOT_TOKEN")
 OWNER_ID = int(required_env("OWNER_ID"))
-API_ID = int(required_env("API_ID"))
-API_HASH = required_env("API_HASH")
+
+# ثوابت Telethon داخلية مثل نظامك السابق.
+# لا تحتاج تشغيل البوت بـ API_ID أو API_HASH.
+# إن أردت لاحقاً استخدام بيانات تطبيقك الرسمية، غيّر القيمتين هنا فقط.
+API_ID = 1
+API_HASH = "b"
 
 DATA_DIR = Path(os.environ.get("DATA_DIR", "safe_link_bot_data"))
 EXPORTS_DIR = DATA_DIR / "exports"
@@ -793,6 +803,9 @@ class Exporter:
 
         # ملفات التصنيف
         status_files = {
+            # فصل كامل بين روابط المجموعات التي تحتوي على أعضاء
+            # وروابط القنوات التي تحتوي على مشتركين.
+            "valid_group": "valid_groups_members.txt",
             "valid_channel": "channels_subscribers.txt",
             "expired": "expired_links.txt",
             "user_link": "user_links.txt",
